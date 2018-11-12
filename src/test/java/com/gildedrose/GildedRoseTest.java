@@ -2,7 +2,12 @@ package com.gildedrose;
 
 import static org.junit.Assert.*;
 
+import com.github.approval.Approval;
+import com.github.approval.Approvals;
+import com.github.approval.reporters.Reporters;
 import org.junit.Test;
+
+import java.nio.file.Paths;
 
 public class GildedRoseTest {
 
@@ -274,6 +279,42 @@ public class GildedRoseTest {
         int resultSellin = 14;
         assertEquals(resultSellin, app.items[0].sellIn);
         assertEquals(resultQuality, app.items[0].quality);
+    }
+
+
+    //APPROVAL
+
+    public String resultString(){
+        String result = "";
+        Item[] items = new Item[] {
+
+                new Item("+5 Dexterity Vest", 10, 20), //
+                new Item("Aged Brie", 2, 50), //
+                new Item("Elixir of the Mongoose", 5, 7), //
+                new Item("Sulfuras, Hand of Ragnaros", 0, 80), //
+                new Item("Sulfuras, Hand of Ragnaros", -1, 80),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 5, 48),
+                // this conjured item does not work properly yet
+                new Item("Conjured Mana Cake", 3, 6) };
+
+
+        GildedRose app = new GildedRose(items);
+
+        for (int i = 0; i < 10; i++) {
+            for (Item item : items) {
+                result += item.toString()+'\n';
+            }
+            app.updateQuality();
+        }
+        return result;
+    }
+
+    @Test
+    public void testMyCoolThingReturnsProperString() {
+        String result = resultString();
+        Approvals.verify(result, Paths.get("src", "resources", "approval", "result.txt"));
     }
 
 }
